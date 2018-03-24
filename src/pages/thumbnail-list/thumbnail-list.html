@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            サムネイル一覧
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-grid>
+        <ion-row>
+          <ion-col col-12 col-sm-6 col-md-3 col-xl-1 *ngFor="let image of Items">
+            <div class="image-container" (click)="onClick_ItemContainer(image)">{{image.Content.Name}}</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+</ion-content>

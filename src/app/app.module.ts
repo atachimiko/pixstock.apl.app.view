@@ -7,12 +7,14 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { ThumbnailListPage } from '../pages/thumbnail-list/thumbnail-list';
 import { MessagingService } from '../shared/service/messaging.service';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    ThumbnailListPage
   ],
   imports: [
     BrowserModule,
@@ -21,7 +23,8 @@ import { MessagingService } from '../shared/service/messaging.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    ThumbnailListPage
   ],
   providers: [
     StatusBar,
