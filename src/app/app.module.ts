@@ -8,13 +8,15 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ThumbnailListPage } from '../pages/thumbnail-list/thumbnail-list';
+import { PreviewPage } from '../pages/preview/preview';
 import { MessagingService } from '../shared/service/messaging.service';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ThumbnailListPage
+    ThumbnailListPage,
+    PreviewPage
   ],
   imports: [
     BrowserModule,
@@ -24,7 +26,8 @@ import { MessagingService } from '../shared/service/messaging.service';
   entryComponents: [
     MyApp,
     HomePage,
-    ThumbnailListPage
+    ThumbnailListPage,
+    PreviewPage
   ],
   providers: [
     StatusBar,

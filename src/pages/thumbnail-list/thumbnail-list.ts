@@ -6,6 +6,7 @@ import { NavController } from 'ionic-angular';
 import { MessagingService } from '../../shared/service/messaging.service';
 import { Content } from '../../shared/model/content';
 import { CategoryDetailResponse } from '../../shared/dao/response/category-detail.response';
+import { PreviewPage } from '../preview/preview';
 
 /**
  * サムネイル一覧画面コンポーネント
@@ -44,5 +45,6 @@ export class ThumbnailListPage {
      */
     onClick_ItemContainer(item: Content): void {
         this._logger.info("onClick_ItemContainer", item);
+        this.navCtrl.push(PreviewPage);
     }
 }
