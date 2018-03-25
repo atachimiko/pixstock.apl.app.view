@@ -10,6 +10,7 @@ import { HomePage } from '../pages/home/home';
 import { ThumbnailListPage } from '../pages/thumbnail-list/thumbnail-list';
 import { PreviewPage } from '../pages/preview/preview';
 import { MessagingService } from '../shared/service/messaging.service';
+import { ContentDao } from '../shared/dao/content.dao';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { MessagingService } from '../shared/service/messaging.service';
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     { provide: LoggerOptions, useValue: { level: LoggerLevel.DEBUG } },
     Logger,
+    ContentDao,
     MessagingService,
   ]
 })
