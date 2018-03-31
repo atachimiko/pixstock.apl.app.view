@@ -26,7 +26,7 @@ export class ThumbnailListPage {
         let o: Observable<CategoryDetailResponse> = Observable.create(observer => {
             this._logger.info("sendSync EAV_GETCATEGORY");
 
-            let result = this._pixstock.ipcRenderer.sendSync("EAV_GETCATEGORY", "1");
+            let result = this._pixstock.ipcRenderer.sendSync("EAV_GETCATEGORY", "3");
 
             let desobj = JSON.parse(result) as CategoryDetailResponse;
             observer.next(desobj);
@@ -45,6 +45,8 @@ export class ThumbnailListPage {
      */
     onClick_ItemContainer(item: Content): void {
         this._logger.info("onClick_ItemContainer", item);
-        this.navCtrl.push(PreviewPage);
+        this.navCtrl.push(PreviewPage,{
+            Content: item
+        });
     }
 }

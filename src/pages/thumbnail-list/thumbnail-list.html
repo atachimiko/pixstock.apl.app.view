@@ -10,7 +10,8 @@
     <ion-grid>
         <ion-row>
           <ion-col col-12 col-sm-6 col-md-3 col-xl-1 *ngFor="let image of Items">
-            <div class="image-container" (click)="onClick_ItemContainer(image)">{{image.Content.Name}}</div>
+            <div class="image-container" (click)="onClick_ItemContainer(image.Content)" [style.background-image]="'url('+image.Content.ThumbnailImageSrcUrl+')'"></div>
+            <div style="text-align: center">{{image.Content.Name}}</div>
           </ion-col>
         </ion-row>
       </ion-grid>
