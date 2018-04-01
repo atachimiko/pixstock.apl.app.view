@@ -46,6 +46,7 @@ export class ThumbnailListPage {
     onClick_ItemContainer(item: Content): void {
         this._logger.info("onClick_ItemContainer", item);
         this.navCtrl.push(PreviewPage,{
+            Contents: this.Items,
             Content: item
         });
     }

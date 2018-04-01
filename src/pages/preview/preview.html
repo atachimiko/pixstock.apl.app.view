@@ -1,11 +1,15 @@
 <ion-header>
     <ion-navbar>
         <ion-title>
-            {{Item.Name}} - プレビュー
+            プレビュー
         </ion-title>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <img src="{{Item.PreviewFileUrl}}" border="0" />
+    <ion-slides class="preview-container">
+        <ion-slide *ngFor="let item of Items">
+            <ion-img [src]="item.Content.PreviewFileUrl" border="0" height="{{ImageHeight}}px"></ion-img>
+        </ion-slide>
+    </ion-slides>
 </ion-content>
