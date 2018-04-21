@@ -3,13 +3,24 @@
         <ion-title>
             プレビュー
         </ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <ion-slides class="preview-container">
-        <ion-slide *ngFor="let item of Items">
-            <ion-img [src]="item.Content.PreviewFileUrl" border="0" height="{{ImageHeight}}px"></ion-img>
-        </ion-slide>
-    </ion-slides>
+    <ion-grid style="height: 100%;">
+        <ion-row style="height:100%;">
+            <ion-col col-12 style="height: 100%;">
+                <ion-slides class="preview-container" style="height: 100%;">
+                    <ion-slide *ngFor="let item of Items">
+                        <ion-img [src]="item.Content.PreviewFileUrl" border="0" style="height:100%;"></ion-img>
+                    </ion-slide>
+                </ion-slides>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

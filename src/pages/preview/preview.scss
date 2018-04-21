@@ -1,4 +1,8 @@
 page-preview {
+    .scroll-content {
+        overflow: hidden;
+    }
+
     .preview-container {
         position: relative;
         height: auto;
@@ -16,7 +20,7 @@ page-preview {
         //width:auto;
     }
 
-    .scroll-content {
-        overflow-y: hidden;
+    .slide-zoom {
+        height: 100%;
     }
 }

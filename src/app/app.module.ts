@@ -1,23 +1,34 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule, NgZone } from '@angular/core';
-import { Logger, Options as LoggerOptions, Level as LoggerLevel } from "angular2-logger/core";
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { ContentDao } from '../shared/dao/content.dao';
+import {
+  ErrorHandler,
+  NgModule,
+  NgZone,
+  ViewChild
+  } from '@angular/core';
+import { HomePage } from '../pages/home/home';
+import {
+  IonicApp,
+  IonicErrorHandler,
+  IonicModule,
+  Nav
+  } from 'ionic-angular';
+import { Level as LoggerLevel, Logger, Options as LoggerOptions } from 'angular2-logger/core';
+import { MessagingService } from '../shared/service/messaging.service';
+import { MyApp } from './app.component';
+import { PreviewPage } from '../pages/preview/preview';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
 import { ThumbnailListPage } from '../pages/thumbnail-list/thumbnail-list';
-import { PreviewPage } from '../pages/preview/preview';
-import { MessagingService } from '../shared/service/messaging.service';
-import { ContentDao } from '../shared/dao/content.dao';
+import { Toolmenu } from '../pages/toolmenu/toolmenu';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
     ThumbnailListPage,
-    PreviewPage
+    PreviewPage,
+    Toolmenu
   ],
   imports: [
     BrowserModule,
@@ -28,7 +39,8 @@ import { ContentDao } from '../shared/dao/content.dao';
     MyApp,
     HomePage,
     ThumbnailListPage,
-    PreviewPage
+    PreviewPage,
+    Toolmenu
   ],
   providers: [
     StatusBar,
@@ -41,12 +53,16 @@ import { ContentDao } from '../shared/dao/content.dao';
   ]
 })
 export class AppModule {
+  @ViewChild(Nav) nav: Nav;
+
+  rootPage: any = HomePage;
+
   constructor(private _logger: Logger,
     private _ngZone: NgZone,
     private _pixstock: MessagingService
   ) {
 
-    _logger.info("アプリケーションの初期化 v0.0.1#4");
+    _logger.info("アプリケーションの初期化 v0.0.1#5");
 
     window['angularComponentRef'] = {
       component: this,

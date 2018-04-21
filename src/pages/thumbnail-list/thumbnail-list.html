@@ -1,18 +1,40 @@
 <ion-header>
     <ion-navbar>
         <ion-title>
-            サムネイル一覧
+            サムネイル一覧aa
         </ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <ion-grid>
-        <ion-row>
-          <ion-col col-12 col-sm-6 col-md-3 col-xl-1 *ngFor="let image of Items">
-            <div class="image-container" (click)="onClick_ItemContainer(image.Content)" [style.background-image]="'url('+image.Content.ThumbnailImageSrcUrl+')'"></div>
-            <div style="text-align: center">{{image.Content.Name}}</div>
-          </ion-col>
+    <ion-grid [style.height.px]="mImageHeight">
+        <ion-row style="height:100%;">
+            <ion-col col-5 style="overflow-y: auto;height: 100%;">
+                <ion-list>
+                    <ion-item *ngFor="let item of Items">
+                        <ion-thumbnail item-start>
+                            <img src="img/thumbnail-totoro.png">
+                        </ion-thumbnail>
+                        <h2 text-wrap>{{item.Category.Name}}</h2>
+                        <button ion-button clear item-end (click)="onClick_CategoryItemContainer(item.Category)">表示</button>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+            <ion-col col-7 style="overflow-y: auto;height: 100%;">
+                <ion-grid>
+                    <ion-row>
+                        <ion-col col-12 col-sm-6 col-md-3 *ngFor="let image of ContentItems">
+                            <div class="image-container" (click)="onClick_ItemContainer(image.Content)" [style.background-image]="'url('+image.Content.ThumbnailImageSrcUrl+')'"></div>
+                            <div style="text-align: center">{{image.Content.Name}}</div>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-col>
         </ion-row>
-      </ion-grid>
+    </ion-grid>
 </ion-content>

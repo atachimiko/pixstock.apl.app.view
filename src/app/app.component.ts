@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { Logger } from "angular2-logger/core";
-import { Platform } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { HomePage } from '../pages/home/home';
-
+import { Logger } from 'angular2-logger/core';
 import { MessagingService } from '../shared/service/messaging.service';
+import { Platform } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 
 @Component({
   templateUrl: 'app.html'
@@ -31,7 +29,6 @@ export class MyApp {
     this._pixstock.ShowContentPreview.subscribe(prop => this.OnShowContentPreview(prop));
     this._pixstock.ShowContentList.subscribe(prop => this.OnShowContentList(prop));
   }
-
 
   onEcho(todo: string) {
     console.info("イベントから取得したメッセージ=" + todo);

@@ -14,3 +14,15 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+#menu_2.split-pane-side {
+    // 左メニューより少し大きめの幅に設定する
+    max-width: $split-pane-side-max-width * 1.5;
+}
+
+
+ion-nav {
+    .scroll-content {
+        overflow-y: hidden;
+    }
+}
