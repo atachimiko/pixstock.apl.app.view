@@ -1,6 +1,5 @@
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import {
-  Content,
   MenuController,
   NavController,
   PopoverController
@@ -8,7 +7,6 @@ import {
 import { ContentPageBase } from '../../shared/pages/ContentPageBase';
 import { Logger } from 'angular2-logger/core';
 import { MessagingService } from '../../shared/service/messaging.service';
-import { Observable } from 'rxjs/Observable';
 import { ThumbnailListPage } from '../thumbnail-list/thumbnail-list';
 
 @Component({

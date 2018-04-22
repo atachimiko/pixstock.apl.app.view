@@ -21,7 +21,7 @@ export abstract class ContentPageBase {
    * @param _ngZone
    * @param popoverCtrl
    */
-  constructor(public _logger: Logger, public _ngZone: NgZone, public popoverCtrl: PopoverController) {
+  constructor(protected _logger: Logger, protected _ngZone: NgZone, protected popoverCtrl: PopoverController) {
     window.onresize = (e) => {
       //ngZone.run will help to run change detection
       this._ngZone.run(() => {

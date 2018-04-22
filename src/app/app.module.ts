@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { CategoryDao } from '../shared/dao/category.dao';
 import { ContentDao } from '../shared/dao/content.dao';
 import {
   ErrorHandler,
@@ -49,6 +50,7 @@ import { Toolmenu } from '../pages/toolmenu/toolmenu';
     { provide: LoggerOptions, useValue: { level: LoggerLevel.DEBUG } },
     Logger,
     ContentDao,
+    CategoryDao,
     MessagingService,
   ]
 })

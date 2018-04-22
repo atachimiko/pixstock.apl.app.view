@@ -1,5 +1,5 @@
 import { Content } from '../model/content';
-import { ContentDetailResponse } from '../../shared/dao/response/content-detail.response';
+import { ContentDetailResponse } from '../../shared/service/response/content-detail.response';
 import { Injectable } from '@angular/core';
 import { Logger } from 'angular2-logger/core';
 import { MessagingService } from '../../shared/service/messaging.service';

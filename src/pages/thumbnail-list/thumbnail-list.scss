@@ -32,4 +32,9 @@ page-thumbnail-list {
             }
         }
     }
+
+    .selected {
+      background-color: rgba(51,153,255, 200);
+      color: white;
+    }
 }
