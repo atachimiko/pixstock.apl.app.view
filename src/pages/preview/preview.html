@@ -14,12 +14,39 @@
 <ion-content padding>
     <ion-grid style="height: 100%;">
         <ion-row style="height:100%;">
-            <ion-col col-12 style="height: 100%;">
-                <ion-slides class="preview-container" style="height: 100%;">
+            <ion-col col-9 style="height: 100%;">
+                <ion-slides *ngIf="mEnableFitImageSliderFlag" class="preview-container" style="height: 100%;" (ionSlideDidChange)="onIonSlideChange()">
                     <ion-slide *ngFor="let item of Items">
                         <ion-img [src]="item.Content.PreviewFileUrl" border="0" style="height:100%;"></ion-img>
                     </ion-slide>
                 </ion-slides>
+                <ion-scroll *ngIf="!mEnableFitImageSliderFlag" scrollX="true" scrollY="true" style="height: 100%;">
+                    <img class="container-zoom" src="http://localhost:5080/aapi/artifact/5/preview" [style.width.%]="mZoomWidth" />
+                </ion-scroll>
+            </ion-col>
+            <ion-col col-3 no-padding style="overflow-y: auto; height: 100%; border:1px solid gray;">
+                <ion-grid no-padding style="height: 100%;">
+                    <ion-row style="height:30%;">
+                        <button ion-button color="primary" (click)="disableFitImage($event)">Fit非表示</button>
+                        <button ion-button secondary (click)="zoomUp($event)">拡大</button>
+                        <button ion-button secondary (click)="zoomDown($event)">縮小</button>
+                    </ion-row>
+                    <ion-row style="height:70%;">
+                        <ion-col no-padding col-12 style="overflow-y: auto; height: 100%;">
+                            <ion-list>
+                                <ion-item-group>
+                                    <ion-item-divider color="light">アルバム</ion-item-divider>
+                                    <button ion-item *ngFor="let item of mAlbumCategoryLabelItems">
+                                        {{ item.Label.Name }}
+                                    </button>
+                                    <ion-item-divider color="light">コンテント</ion-item-divider>
+                                    <ion-item>Angola</ion-item>
+                                    <ion-item>Argentina</ion-item>
+                                </ion-item-group>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
             </ion-col>
         </ion-row>
     </ion-grid>

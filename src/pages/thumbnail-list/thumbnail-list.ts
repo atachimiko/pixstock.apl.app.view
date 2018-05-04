@@ -117,6 +117,7 @@ export class ThumbnailListPage extends ContentPageBase {
     result.SubCategory.forEach((item, index) => {
       let listitem = new ThumbnailListPageItem();
       listitem.Category = item;
+
       if (item.HasLinkSubCategoryFlag) {
         listitem.IsSubCaetgory = true;
       }

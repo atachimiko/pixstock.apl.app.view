@@ -1,14 +1,17 @@
 import { Content } from '../model/content';
 import { ContentDetailResponse } from '../../shared/service/response/content-detail.response';
-import { Injectable } from '@angular/core';
+import { Injectable, destroyPlatform } from '@angular/core';
 import { Logger } from 'angular2-logger/core';
 import { MessagingService } from '../../shared/service/messaging.service';
 import { Observable } from 'rxjs';
+import { ResultLoadContent } from '../infra/load.content';
 
 @Injectable()
 export class ContentDao {
-  constructor(public _logger: Logger,
-    public _MessagingService: MessagingService) {
+  constructor(
+    private _logger: Logger,
+    private _MessagingService: MessagingService
+  ) {
 
   }
 
@@ -17,15 +20,16 @@ export class ContentDao {
    *
    * @param contentId 取得するコンテント情報
    */
-  loadContent(contentId: Number): Observable<Content> {
-    this._logger.debug("Call LoadContent");
+  loadContent(contentId: Number): Observable<ResultLoadContent> {
+    return Observable.create(observer => {
+      let response = this._MessagingService.ipcRenderer.sendSync("EAV_GETCONTENT", contentId);
 
-    let o: Observable<Content> = Observable.create(observer => {
-      let result = this._MessagingService.ipcRenderer.sendSync("EAV_GETCONTENT", contentId);
-      let desobj = JSON.parse(result) as ContentDetailResponse;
-      observer.next(desobj.Content);
+      let desobj = JSON.parse(response) as ContentDetailResponse;
+      var result: ResultLoadContent = {
+        Content: desobj.Content,
+        Category: desobj.Category
+      };
+      observer.next(result);
     });
-
-    return o;
   }
 }

@@ -20,6 +20,13 @@ page-preview {
         //width:auto;
     }
 
+    img.container-zoom {
+        max-width: unset;
+        display: block;
+        margin: 0 auto;
+        object-fit: cover;
+    }
+
     .slide-zoom {
         height: 100%;
     }

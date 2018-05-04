@@ -9,10 +9,9 @@ import {
   NavController,
   NavParams,
   PopoverController,
-  Slide,
   Slides
-  } from 'ionic-angular';
-import { Observable } from 'rxjs';
+} from 'ionic-angular';
+import { Label } from '../../shared/model/label';
 
 /**
  * プレビュー画面コンポーネント
@@ -24,9 +23,26 @@ import { Observable } from 'rxjs';
 export class PreviewPage extends ContentPageBase {
   @ViewChild(Slides) slides: Slides;
 
-  Items: Array<{ Content }>;
+  Items: Array<{ Content: Content }>;
 
   Item: Content;
+
+  /**
+   * コンテントが所属するカテゴリ（アルバム）に付与されているラベル情報一覧
+   */
+  mAlbumCategoryLabelItems: Array<{ Label: Label }>
+
+  /**
+   * コンテントに付与されているラベル情報一覧（未実装）
+   */
+  mContentLabelItems: Array<{ Label: Label }>
+
+  mEnableFitImageSliderFlag: boolean;
+
+  /**
+   * 画像拡大表示時の表示倍率(パーセンテージ)
+   */
+  mZoomWidth: number = 100;
 
   /**
    * コンストラクタ
@@ -53,6 +69,9 @@ export class PreviewPage extends ContentPageBase {
     this._logger.info("Previewのコンストラクタ");
 
     this.Items = [];
+    this.mAlbumCategoryLabelItems = [];
+    this.mContentLabelItems = [];
+    this.mEnableFitImageSliderFlag = true;
 
     // くるくる表示サンプル
     // let loader = this.loadingCtrl.create({
@@ -79,6 +98,11 @@ export class PreviewPage extends ContentPageBase {
    * @inheritDoc
    */
   OnWindowResize() {
+    setTimeout(() => {
+      this._logger.info("スライドのリサイズを実施します");
+      this.slides.resize();
+      this.slides.update();
+    }, 10);
   }
 
   ngAfterViewInit() {
@@ -91,6 +115,40 @@ export class PreviewPage extends ContentPageBase {
       this._logger.debug("プレビュー表示対象データが見つかりませんでした");
     }
     this._logger.debug("ngAfterViewInit - OUT");
+  }
+
+  /**
+   * スライドコントロールによる、アイテムスライドイベントのハンドラ
+   */
+  onIonSlideChange() {
+    this._logger.debug("[onIonSlideChange] IN");
+    let currentIndex = this.slides.getActiveIndex();
+    let slideItem = this.Items[currentIndex];
+    this.contentDao.loadContent(slideItem.Content.Id).subscribe(result => {
+      this._logger.debug("[onIonSlideChange] コンテント情報読み込み完了");
+      // コンテント情報が所属するカテゴリ情報から、
+      // カテゴリに付与されているラベル一覧を取得する
+      this.mAlbumCategoryLabelItems = [];
+      result.Category.Labels.forEach((item, index) => {
+        this.mAlbumCategoryLabelItems.push({ Label: item });
+      });
+    });
+    this._logger.debug("[onIonSlideChange] OUT");
+  }
+
+  disableFitImage() {
+    this._logger.debug("IN");
+    this.mEnableFitImageSliderFlag = false;
+  }
+
+  zoomUp() {
+    this._logger.debug("IN - zoomUp");
+    this.mZoomWidth = this.mZoomWidth + 10;
+  }
+
+  zoomDown() {
+    this._logger.debug("IN - zoomDown");
+    this.mZoomWidth = this.mZoomWidth - 10;
   }
 
 }

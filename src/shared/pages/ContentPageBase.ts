@@ -38,7 +38,6 @@ export abstract class ContentPageBase {
 
   fitImageContainer(): void {
     let dimention = this.content.getContentDimensions();
-    this._logger.info("読み込み済みです", dimention);
     this.mImageHeight = dimention.contentHeight - dimention.contentTop + 46; // 46は、ヘッダー領域の高さ（環境依存）
   }
 
