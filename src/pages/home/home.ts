@@ -8,6 +8,7 @@ import { ContentPageBase } from '../../shared/pages/ContentPageBase';
 import { Logger } from 'angular2-logger/core';
 import { MessagingService } from '../../shared/service/messaging.service';
 import { ThumbnailListPage } from '../thumbnail-list/thumbnail-list';
+import { LabelListPage } from '../label-list/label-list';
 
 @Component({
   selector: 'page-home',
@@ -45,6 +46,10 @@ export class HomePage extends ContentPageBase {
 
   naviThumbnailList(): void {
     this.navCtrl.push(ThumbnailListPage);
+  }
+
+  naviLabelList(): void {
+    this.navCtrl.push(LabelListPage);
   }
 
   /**

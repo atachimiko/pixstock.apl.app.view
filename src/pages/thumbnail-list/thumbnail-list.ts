@@ -8,6 +8,7 @@ import { MessagingService } from '../../shared/service/messaging.service';
 import { NavController, NavParams, PopoverController, List } from 'ionic-angular';
 import { PreviewPage } from '../preview/preview';
 import { ResultLoadCategory } from '../../shared/infra/load.category';
+import { ThumbnailListNavParam } from '../../shared/infra/navparam.thumbnail-list';
 
 /**
  * サムネイル一覧画面コンポーネント
@@ -63,9 +64,17 @@ export class ThumbnailListPage extends ContentPageBase {
     this.mItems = [];
     this.mContentItems = [];
 
-    this.mCategoryId = navParams.get("CategoryId") as Number;
-    if (this.mCategoryId == null) {
-      this.mCategoryId = 1;
+    let ruleLabelParam = navParams.get("Rule_Label") as ThumbnailListNavParam;
+    if (ruleLabelParam != null) {
+      this._logger.info("ラベルルールを適応して、サムネイル一覧画面を表示します");
+      this._logger.info(ruleLabelParam);
+      // TODO:
+      this.mCategoryId = 1; // 暫定処理
+    } else {
+      this.mCategoryId = navParams.get("CategoryId") as Number;
+      if (this.mCategoryId == null) {
+        this.mCategoryId = 1;
+      }
     }
   }
 

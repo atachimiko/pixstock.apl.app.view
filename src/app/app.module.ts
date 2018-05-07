@@ -22,6 +22,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { ThumbnailListPage } from '../pages/thumbnail-list/thumbnail-list';
 import { Toolmenu } from '../pages/toolmenu/toolmenu';
+import { LabelDao } from '../shared/dao/label.dao';
+import { LabelListPage } from '../pages/label-list/label-list';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { Toolmenu } from '../pages/toolmenu/toolmenu';
     HomePage,
     ThumbnailListPage,
     PreviewPage,
+    LabelListPage,
     Toolmenu
   ],
   imports: [
@@ -41,6 +44,7 @@ import { Toolmenu } from '../pages/toolmenu/toolmenu';
     HomePage,
     ThumbnailListPage,
     PreviewPage,
+    LabelListPage,
     Toolmenu
   ],
   providers: [
@@ -51,6 +55,7 @@ import { Toolmenu } from '../pages/toolmenu/toolmenu';
     Logger,
     ContentDao,
     CategoryDao,
+    LabelDao,
     MessagingService,
   ]
 })
