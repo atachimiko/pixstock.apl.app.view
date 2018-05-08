@@ -9,6 +9,7 @@ import { NavController, NavParams, PopoverController, List } from 'ionic-angular
 import { PreviewPage } from '../preview/preview';
 import { ResultLoadCategory } from '../../shared/infra/load.category';
 import { ThumbnailListNavParam } from '../../shared/infra/navparam.thumbnail-list';
+import { LabelDao, ResultFindLabelLinkCategory } from '../../shared/dao/label.dao';
 
 /**
  * サムネイル一覧画面コンポーネント
@@ -23,7 +24,8 @@ export class ThumbnailListPage extends ContentPageBase {
   mContentItems: Array<{ Content: Content }>;
   mActiveLoadingCategory: boolean = false;
   mCategoryListLazyLoadSpinner: boolean = true;
-  mCategoryId: Number;
+  mCategoryId: Number = null;
+  mRule: string = null;
 
   /**
    * 画面の初期化が完了しているかどうかのフラグ
@@ -57,6 +59,7 @@ export class ThumbnailListPage extends ContentPageBase {
     , protected _ngZone: NgZone
     , protected popoverCtrl: PopoverController
     , protected categoryDao: CategoryDao
+    , protected labelDao: LabelDao
   ) {
     super(_logger, _ngZone, popoverCtrl);
     this._logger.info("ThumbnailListPageのコンストラクタ");
@@ -68,9 +71,9 @@ export class ThumbnailListPage extends ContentPageBase {
     if (ruleLabelParam != null) {
       this._logger.info("ラベルルールを適応して、サムネイル一覧画面を表示します");
       this._logger.info(ruleLabelParam);
-      // TODO:
-      this.mCategoryId = 1; // 暫定処理
+      this.mRule = ruleLabelParam.Rule;
     } else {
+      this._logger.info("カテゴリIDから、サムネイル一覧画面を表示します");
       this.mCategoryId = navParams.get("CategoryId") as Number;
       if (this.mCategoryId == null) {
         this.mCategoryId = 1;
@@ -83,35 +86,13 @@ export class ThumbnailListPage extends ContentPageBase {
 
     if (!this.mInitializeCompletedFlag) return;
 
-    var oldCount = 0;
-    var callback = (result) => {
-      this.onLoadCategory_Result(result);
-
-      if (oldCount == this.mItems.length) {
-        this.mInitializeCompletedFlag = false;
-        this.mAdjustLazyLoadNum = this.mItems.length; // 1ページ分のアイテムを、一度に読み込むアイテム数とする。
-        return;
-      }
-
-      oldCount = this.mItems.length;
-
-      // 表示領域からはみ出す分のアイテムを作成するまで、初回の呼び出しを繰り返す。
-      let dimention = this.content.getContentDimensions();
-      var element = this.list.getNativeElement();
-
-      if (element.offsetHeight < dimention.contentHeight) {
-        this.mActiveLoadingCategory = true;
-        setTimeout(() => {
-          o = this.categoryDao.loadCategory(this.mCategoryId, this.mItems.length, 2);
-          o.subscribe((result) => { callback(result) });
-        }, 10);
-      }
+    if (this.mCategoryId != null) {
+      // 親カテゴリIDが設定済みの場合、その子階層カテゴリを一覧表示する
+      this.showSubCategoryByCategoryId();
+    } else if (this.mRule != "") {
+      this._logger.info("ルールからカテゴリ一覧を表示する");
+      this.showCategoryByRule();
     }
-
-    this.mActiveLoadingCategory = true;
-
-    var o = this.categoryDao.loadCategory(this.mCategoryId, 0, 2); // 初期化読み込みの、最初のカテゴリ読み込み呼び出し
-    o.subscribe((result) => { callback(result) });
   }
 
   /**
@@ -123,15 +104,8 @@ export class ThumbnailListPage extends ContentPageBase {
     this._logger.info("EAV_GETCATEGORYイベントのレスポンス", result);
 
     // サブカテゴリ一覧のアイテム化
-    result.SubCategory.forEach((item, index) => {
-      let listitem = new ThumbnailListPageItem();
-      listitem.Category = item;
-
-      if (item.HasLinkSubCategoryFlag) {
-        listitem.IsSubCaetgory = true;
-      }
-      listitem.IsContent = true;
-      this.mItems.push(listitem);
+    result.SubCategory.forEach((category, index) => {
+      this.AddThumbnailListPageItem(category);
     });
 
     if (result.Content.length > 0) {
@@ -159,13 +133,16 @@ export class ThumbnailListPage extends ContentPageBase {
    */
   onCategoryListScroll(event): void {
     var element = this.list.getNativeElement();
-    var diff = event.srcElement.offsetHeight + event.srcElement.scrollTop;
-    if (diff > element.offsetHeight && !this.mActiveLoadingCategory) {
-      this.mActiveLoadingCategory = true;
-      var o = this.categoryDao.loadCategory(this.mCategoryId, this.mItems.length, this.mAdjustLazyLoadNum);
-      o.subscribe((result) => {
-        this.onLoadCategory_Result(result);
-      });
+    if (this.mCategoryId != null) {
+      var diff = event.srcElement.offsetHeight + event.srcElement.scrollTop;
+      if (diff > element.offsetHeight && !this.mActiveLoadingCategory) {
+        this.mActiveLoadingCategory = true;
+        // スクロールの末尾で、続きのデータを再読込する
+        var o = this.categoryDao.loadCategory(this.mCategoryId, this.mItems.length, this.mAdjustLazyLoadNum);
+        o.subscribe((result) => {
+          this.onLoadCategory_Result(result);
+        });
+      }
     }
   }
 
@@ -188,7 +165,7 @@ export class ThumbnailListPage extends ContentPageBase {
    * @param item クリックされたアイテム(Itemsプロパティ内の要素)
    */
   onClick_CategoryItemContainer(item: Category): void {
-    this._logger.info("onClick_CategoryItemContainer", item);
+    this._logger.info("[ThumbnailListPage.onClick_CategoryItemContainer][IN]", item);
     this.navCtrl.push(ThumbnailListPage, {
       CategoryId: item.Id
     });
@@ -200,13 +177,14 @@ export class ThumbnailListPage extends ContentPageBase {
    * @param item 選択したカテゴリ情報
    */
   onClick_CategoryContentItem(item: ThumbnailListPageItem, category: Category): void {
-    this._logger.info("onClick_CategoryContentItem", category);
+    this._logger.info("[ThumbnailListPage.onClick_CategoryContentItem][IN]", category);
     this.toggleSelectedItem(item);
     this.loadCategoryItemList(category.Id);
   }
 
   /**
-   * 指定のアイテムのみ選択状態に設定し、それ以外のアイテムは非選択状態に設定する
+   * カテゴリ一覧リストの任意アイテムのみ選択状態に設定し、
+   * それ以外のアイテムは非選択状態に設定する
    *
    * @param item 選択状態にするアイテム
    */
@@ -227,6 +205,75 @@ export class ThumbnailListPage extends ContentPageBase {
         this.mContentItems.push({ Content: item });
       });
     });
+  }
+
+  /**
+   * 任意のカテゴリIDを親カテゴリとして、子階層カテゴリ一覧を表示する
+   */
+  private showSubCategoryByCategoryId() {
+    this._logger.debug("[ThumbnailListPage.showSubCategoryByCategoryId][IN]");
+
+    var oldCount = 0;
+    var callback = (result) => {
+      this.onLoadCategory_Result(result);
+
+      if (oldCount == this.mItems.length) {
+        this.mInitializeCompletedFlag = false;
+        this.mAdjustLazyLoadNum = this.mItems.length; // 1ページ分のアイテムを、一度に読み込むアイテム数とする。
+        return;
+      }
+
+      oldCount = this.mItems.length;
+
+      // 表示領域からはみ出す分のアイテムを作成するまで、初回の呼び出しを繰り返す。
+      // setTimeoutを使って画面の再描画を行わないと、アイテム追加後の高さが正常に取得できない
+      let dimention = this.content.getContentDimensions();
+      var element = this.list.getNativeElement();
+      if (element.offsetHeight < dimention.contentHeight) {
+        this.mActiveLoadingCategory = true;
+        setTimeout(() => {
+          o = this.categoryDao.loadCategory(this.mCategoryId, this.mItems.length, 2);
+          o.subscribe((result) => { callback(result) });
+        }, 10);
+      }
+    }
+
+    this.mActiveLoadingCategory = true;
+
+    var o = this.categoryDao.loadCategory(this.mCategoryId, 0, 2); // 初期化読み込みの、最初のカテゴリ読み込み呼び出し
+    o.subscribe((result) => { callback(result) });
+  }
+
+  /**
+   * 任意のルールを条件に、カテゴリ一覧を表示する
+   */
+  private showCategoryByRule() {
+    this._logger.debug("[ThumbnailListPage.showCategoryByRule][IN]");
+
+    var callback = (result: ResultFindLabelLinkCategory) => {
+      result.Categories.forEach(category => {
+        this.AddThumbnailListPageItem(category);
+      });
+
+      this.mCategoryListLazyLoadSpinner = false;
+    }; // end callback
+
+    this.labelDao.findLabelLinkCategory(this.mRule)
+      .subscribe((result) => {
+        callback(result)
+      });
+  }
+
+  private AddThumbnailListPageItem(category: Category) {
+    let listitem = new ThumbnailListPageItem();
+    listitem.Category = category;
+
+    if (category.HasLinkSubCategoryFlag) {
+      listitem.IsSubCaetgory = true;
+    }
+    listitem.IsContent = true;
+
+    this.mItems.push(listitem);
   }
 }
 

@@ -27,12 +27,10 @@ export class LabelListPage extends ContentPageBase {
   }
 
   ionViewDidEnter() {
-    this._logger.info("[ionViewDidEnter] - IN");
     super.ionViewDidEnter();
 
     this.labelDao.loadLabelList().subscribe((result) => {
-      this._logger.info("[ionViewDidEnter] - Response");
-      this.mItems = result;
+      this.mItems = result.Labels;
     });
   }
 
@@ -41,15 +39,16 @@ export class LabelListPage extends ContentPageBase {
   }
 
   onClick_ContentItemContainer(item: Label): void {
-    this._logger.info("onClick_ContentItemContainer", item);
-    this.transitionThumbnailListPage();
+    this._logger.info("[LabelListPage.onClick_ContentItemContainer][IN]", item);
+    this.transitionThumbnailListPage(item.Id);
   }
 
   /**
    *
+   * @param labelId とりあえず、1つのラベルのみ指定
    */
-  transitionThumbnailListPage(): void {
-    var param: ThumbnailListNavParam = { Rule: "Test" };
+  transitionThumbnailListPage(labelId: Number): void {
+    var param: ThumbnailListNavParam = { Rule: labelId.toString() };
     this.navCtrl.push(ThumbnailListPage, { Rule_Label: param });
   }
 }

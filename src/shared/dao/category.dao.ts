@@ -23,6 +23,7 @@ export class CategoryDao {
    * @param categoryId 読み込むカテゴリ情報のキー
    */
   public loadCategory(categoryId: Number, offsetSubCategory: Number = 0, limitSubCategory: Number = 0): Observable<ResultLoadCategory> {
+    this._logger.debug("[CategoryDao.loadCategory][IN]");
     return Observable.create(observer => {
       //this._logger.info("sendSync EAV_GETCATEGORY", categoryId, offsetSubCategory);
       var param = { "CategoryId": categoryId, "OffsetSubCategory": offsetSubCategory, "LimitSubCategory": limitSubCategory };
